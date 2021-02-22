@@ -1,0 +1,1 @@
+# typegraphql-prisma-starter
