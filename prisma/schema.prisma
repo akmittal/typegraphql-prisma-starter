@@ -1,0 +1,39 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+generator typegraphql {
+  provider = "typegraphql-prisma"
+  output   = "../src/generated/type-graphql"
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  content   String?
+  published Boolean  @default(false)
+  authorId  Int
+  User      User     @relation(fields: [authorId], references: [id])
+}
+
+model Profile {
+  id     Int     @id @default(autoincrement())
+  bio    String?
+  userId Int     @unique
+  User   User    @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  firstname String?   @db.VarChar(255)
+  lastname  String?   @db.VarChar(255)
+  username  String?   @unique @db.VarChar(255)
+  password  String    @unique @db.VarChar(255)
+  email     String    @unique @db.VarChar(255)
+  Comment   Comment[]
+  Profile   Profile?
+}
